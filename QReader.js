@@ -11,10 +11,12 @@ export default class QReader extends React.Component {
             lastScannerdUrl: null,}
     }
 
+    // Est appelée quand le composant (la classe QReader) à fini de se charger.
     componentDidMount() {
         this._requestCameraPermission();
     }
 
+    // Demande l'autorisation pour utiliser la caméra du téléphone.
     _requestCameraPermission = async () => {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({
@@ -22,6 +24,7 @@ export default class QReader extends React.Component {
         });
     };
 
+    // Actualise la dernière URL enregistrée
     _handleBarCodeRead = result => {
         if (result.data !== this.state.lastScannerdUrl) {
             LayoutAnimation.spring();
@@ -29,17 +32,17 @@ export default class QReader extends React.Component {
         }
     };
 
+    // Pour rappel, la méthode render est la méthode d'affichage.
     render() {
         return (
             <View style={this.props.styles.container}>
-            { this.state.hasCameraPersmission === null ?
+
+            {
+                this.state.hasCameraPersmission === null ?
                 <Text>Requesting for camera permission</Text> :
                 this.state.hasCameraPersmission === false ?
-                    <Text style={{ color: '#fff' }}>Camera permission is not granted</Text> :
-                    <BarCodeScanner onBarCodeRead={this._handleBarCodeRead}
-                    style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width,}}
-            
-
+                <Text style={{ color: '#fff' }}>Camera permission is not granted</Text> :
+                <BarCodeScanner onBarCodeRead={this._handleBarCodeRead} style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width,}}
             />}
 
             {this._maybeRenderUrl()}
@@ -49,6 +52,7 @@ export default class QReader extends React.Component {
         );
     }
 
+    // Gère le click sur l'url trouvée.
     _handlePressUrl = () => {
         Alert.alert(
             'Open this URL?',
@@ -67,10 +71,12 @@ export default class QReader extends React.Component {
         );
     };
 
+    // Gère le click du bouton "Cancel".
     _handlePressCancel = () => {
         this.setState({ lastScannerdUrl: null });
     };
 
+    // Affiche la dernière url trouvée.
     _maybeRenderUrl = () => {
         if (!this.state.lastScannerdUrl) {
             return;
